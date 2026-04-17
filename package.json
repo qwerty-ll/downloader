@@ -31,7 +31,8 @@
     "mac": {
       "target": "dmg",
       "icon": "src/assets/icon.png",
-      "category": "public.app-category.video"
+      "category": "public.app-category.video",
+      "forceCodeSigning": false
     },
     "nsis": {
       "oneClick": false,

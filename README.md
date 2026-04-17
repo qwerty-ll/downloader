@@ -11,7 +11,6 @@
 | Платформа | Ссылка на загрузку |
 | :--- | :--- |
 | **🪟 Windows** | [**Скачать .exe (x64)**](https://github.com/qwerty-ll/downloader/releases/latest) |
-| **🍎 macOS** | [**Скачать .dmg (Intel/Apple Silicon)**](https://github.com/qwerty-ll/downloader/releases/latest) |
 
 ---
 
@@ -20,22 +19,16 @@
 -   **Zero-Config**: Вам не нужно ничего устанавливать отдельно. Скрипт настройки сам скачает портативные версии `yt-dlp`, `ffmpeg` и `aria2c`.
 -   **Turbo Mode**: Использование мультипоточного скачивания через Aria2c для полной загрузки вашего интернет-канала.
 -   **Полная русификация**: Весь интерфейс, уведомления и логи переведены на русский язык.
--   **Обход ограничений**: Встроенная поддержка Cookies позволяет скачивать приватные видео, просто выбрав ваш браузер в списке.
+-   **Обход ограничений**: Встроенная поддержка Cookies позволяет скачивать приватные видео, просто ввыбрав ваш браузер в списке.
 -   **Умный трекинг**: Реальное отображение прогресса, скорости загрузки и логов ошибок прямо в окне программы.
 
 ---
 
 ## 🚀 Быстрый старт
 
-Выберите вашу операционную систему для получения инструкций:
-
 ### 🪟 Windows Пользователям
 1. Запустите [**Установить-Windows.bat**](file:///Users/smirnovmakar/AntigravityProjects/DownloadVideo/Установить-Windows.bat) (двойным кликом).
 2. После установки запускайте [**Запустить-Windows.bat**](file:///Users/smirnovmakar/AntigravityProjects/DownloadVideo/Запустить-Windows.bat).
-
-### 🍎 Mac Пользователям
-1. Запустите [**Установить-Mac.command**](file:///Users/smirnovmakar/AntigravityProjects/DownloadVideo/Установить-Mac.command) (двойным кликом прямо в Finder).
-2. После установки запускайте [**Запустить-Mac.command**](file:///Users/smirnovmakar/AntigravityProjects/DownloadVideo/Запустить-Mac.command).
 
 ---
 

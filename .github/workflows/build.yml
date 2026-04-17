@@ -7,12 +7,7 @@ on:
 
 jobs:
   release:
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [macos-latest, windows-latest]
-
-    runs-on: ${{ matrix.os }}
+    runs-on: windows-latest
 
     steps:
       - name: Checkout Code
@@ -27,17 +22,7 @@ jobs:
       - name: Install Dependencies
         run: npm install
 
-      - name: Build & Publish (Windows)
-        if: matrix.os == 'windows-latest'
+      - name: Build & Publish
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: npm run dist -- --win
-
-      - name: Build & Publish (Mac)
-        if: matrix.os == 'macos-latest'
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          CSC_IDENTITY_AUTO_DISCOVERY: false
-          CSC_LINK: ""
-          CSC_KEY_PASSWORD: ""
-        run: npm run dist -- --mac

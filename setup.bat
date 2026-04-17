@@ -1,26 +1,31 @@
 @echo off
-echo 🚀 Starting Downloader Pro Setup...
+chcp 65001 > nul
+echo 🚀 Запуск настройки Downloader Pro...
 
-:: Check for node
+:: Проверка Node.js
 where node >nul 2>nul
 if %errorlevel% neq 0 (
-    echo ❌ Node.js is not installed. Please install it from https://nodejs.org/
+    echo ❌ Node.js не установлен. Пожалуйста, установите его с https://nodejs.org/
     pause
     exit /b 1
 )
 
-:: Install dependencies
-echo 📦 Installing npm dependencies...
+:: Установка зависимостей
+echo 📦 Установка зависимостей npm...
 call npm install
 
-:: Check tools
-echo 🔍 Verifying system tools...
-node scripts/check-tools.js
+:: Загрузка портативных утилит
+echo 📥 Загрузка необходимых инструментов (yt-dlp, ffmpeg, aria2c)...
+node scripts/download-tools.js
+
+:: Проверка инструментов
+echo 🔍 Проверка готовности окружения...
+call npm run setup
 
 if %errorlevel% equ 0 (
-    echo ✅ Setup complete! You can now run 'npm start'.
+    echo ✅ Настройка завершена! Теперь вы можете запустить приложение командой: npm start
 ) else (
-    echo ⚠️  Setup finished with warnings. Please resolve missing tools before running the app.
+    echo ⚠️  Настройка завершена с предупреждениями. Проверьте сообщения выше.
 )
 
 pause

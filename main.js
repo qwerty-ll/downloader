@@ -1,5 +1,6 @@
 const { app, BrowserWindow, ipcMain, dialog } = require('electron');
 const path = require('path');
+const fs = require('fs');
 const { spawn, exec } = require('child_process');
 const readline = require('readline');
 
@@ -47,11 +48,32 @@ ipcMain.on('window-close', () => {
   mainWindow.close();
 });
 
+// Helper to get tool path (local bin or system PATH)
+function getToolPath(toolName) {
+    const isWin = process.platform === 'win32';
+    const ext = isWin ? '.exe' : '';
+    const localPath = path.join(__dirname, 'bin', toolName + ext);
+    
+    if (fs.existsSync(localPath)) {
+        return localPath;
+    }
+    return toolName; // Fallback to system PATH
+}
+
 // Check if tools (ffmpeg, aria2c) are available
 ipcMain.handle('check-tools', async () => {
   const check = (cmd) => {
     return new Promise((resolve) => {
-      const command = process.platform === 'win32' ? `where ${cmd}` : `which ${cmd}`;
+      const isWin = process.platform === 'win32';
+      const ext = isWin ? '.exe' : '';
+      const localPath = path.join(__dirname, 'bin', cmd + ext);
+
+      if (fs.existsSync(localPath)) {
+          resolve(true);
+          return;
+      }
+
+      const command = isWin ? `where ${cmd}` : `which ${cmd}`;
       exec(command, (error) => {
         resolve(!error);
       });
@@ -98,7 +120,7 @@ ipcMain.on('start-download', (event, { url, savePath, browser, useAria }) => {
     args.push('--compat-options', 'no-external-downloader-progress');
   }
 
-  const downloadProcess = spawn('yt-dlp', args);
+  const downloadProcess = spawn(getToolPath('yt-dlp'), args);
 
   const rl = readline.createInterface({
     input: downloadProcess.stdout,

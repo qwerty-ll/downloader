@@ -1,4 +1,4 @@
-// --- UI Elements ---
+// --- Элементы UI ---
 const minimizeBtn = document.getElementById('minimize-btn');
 const closeBtn = document.getElementById('close-btn');
 const urlInput = document.getElementById('url-input');
@@ -18,11 +18,11 @@ const toast = document.getElementById('toast');
 const toastIcon = document.getElementById('toast-icon');
 const toastMessage = document.getElementById('toast-message');
 
-// --- State ---
+// --- Состояние ---
 let selectedPath = '';
 let isDownloading = false;
 
-// --- Initial Setup ---
+// --- Инициализация ---
 async function init() {
     try {
         const tools = await window.api.checkTools();
@@ -30,7 +30,7 @@ async function init() {
         updateToolIndicator('status-aria2c', tools.aria2c);
         updateToolIndicator('status-ytdlp', tools.ytdlp);
     } catch (e) {
-        showToast('Error checking tools', 'error');
+        showToast('Ошибка при проверке инструментов', 'error');
     }
 }
 
@@ -50,15 +50,15 @@ function updateToolIndicator(id, exists) {
 
 init();
 
-// --- Window Controls ---
+// --- Управление окном ---
 minimizeBtn.onclick = () => window.api.minimize();
 closeBtn.onclick = () => window.api.close();
 
-// --- Toast System ---
+// --- Система уведомлений (Toast) ---
 function showToast(message, type = 'info') {
     toastMessage.innerText = message;
     
-    // Reset classes
+    // Сброс классов
     toastIcon.innerHTML = '';
     toastIcon.className = 'inline-flex items-center justify-center flex-shrink-0 w-8 h-8 rounded-lg ';
     
@@ -80,7 +80,7 @@ function showToast(message, type = 'info') {
     }, 4000);
 }
 
-// --- Folder Selection ---
+// --- Выбор папки ---
 selectFolderBtn.onclick = async () => {
     const path = await window.api.selectFolder();
     if (path) {
@@ -88,35 +88,35 @@ selectFolderBtn.onclick = async () => {
         pathDisplay.innerText = path;
         pathDisplay.classList.remove('text-slate-400');
         pathDisplay.classList.add('text-indigo-300');
-        showToast('Destination folder updated', 'success');
+        showToast('Папка для сохранения изменена', 'success');
     }
 };
 
-// --- Start Download ---
+// --- Начало загрузки ---
 startBtn.onclick = () => {
     const url = urlInput.value.trim();
     
     if (!url) {
-        showToast('Please enter a valid URL', 'error');
+        showToast('Введите корректную ссылку', 'error');
         return;
     }
     if (!selectedPath) {
-        showToast('Please select a destination folder', 'error');
+        showToast('Выберите папку для сохранения', 'error');
         return;
     }
 
     if (isDownloading) return;
 
-    // UI Feedback
+    // UI Обратная связь
     isDownloading = true;
     startBtn.disabled = true;
-    startBtn.innerText = 'DOWNLOADING...';
+    startBtn.innerText = 'ЗАГРУЗКА...';
     startBtn.classList.replace('bg-indigo-600', 'bg-slate-700');
     progressContainer.classList.remove('hidden');
     
-    // Reset Progress
+    // Сброс прогресса
     updateProgress({ percentage: 0, speed: '0.00 MiB/s' });
-    statusText.innerText = 'Connecting to server...';
+    statusText.innerText = 'Подключение к серверу...';
 
     window.api.startDownload({
         url,
@@ -126,7 +126,7 @@ startBtn.onclick = () => {
     });
 };
 
-// --- Progress Updates ---
+// --- Обновления прогресса ---
 window.api.onProgress((data) => {
     updateProgress(data);
 });
@@ -134,33 +134,32 @@ window.api.onProgress((data) => {
 window.api.onFinished((data) => {
     isDownloading = false;
     startBtn.disabled = false;
-    startBtn.innerText = 'START DOWNLOAD';
+    startBtn.innerText = 'НАЧАТЬ ЗАГРУЗКУ';
     startBtn.classList.replace('bg-slate-700', 'bg-indigo-600');
     
     if (data.code === 0) {
-        statusText.innerText = 'Download finished successfully!';
+        statusText.innerText = 'Загрузка успешно завершена!';
         statusText.classList.replace('text-slate-400', 'text-emerald-400');
-        showToast('Success: Video downloaded!', 'success');
+        showToast('Успех: Видео загружено!', 'success');
     } else {
-        statusText.innerText = `Download failed with code ${data.code}`;
+        statusText.innerText = `Ошибка загрузки. Код: ${data.code}`;
         statusText.classList.replace('text-slate-400', 'text-rose-400');
-        showToast('Download failed. Check URL or Tool status.', 'error');
+        showToast('Загрузка прервана. Проверьте ссылку или настройки.', 'error');
     }
 });
 
 window.api.onError((data) => {
     isDownloading = false;
     startBtn.disabled = false;
-    startBtn.innerText = 'START DOWNLOAD';
+    startBtn.innerText = 'НАЧАТЬ ЗАГРУЗКУ';
     startBtn.classList.replace('bg-slate-700', 'bg-indigo-600');
     
-    statusText.innerText = 'Error occurred during download.';
+    statusText.innerText = 'Произошла ошибка при загрузке.';
     statusText.classList.replace('text-slate-400', 'text-rose-400');
-    showToast(`Error: ${data.message}`, 'error');
+    showToast(`Ошибка: ${data.message}`, 'error');
 });
 
 window.api.onLog((message) => {
-    // Show detailed logs in status text for technical insight
     if (message.length > 5) {
         statusText.innerText = message.substring(0, 100) + (message.length > 100 ? '...' : '');
     }
@@ -172,5 +171,5 @@ function updateProgress(data) {
     progressPercent.innerText = `${percentage}%`;
     progressBarFill.style.width = `${percentage}%`;
     speedDisplay.innerText = speed || '0.00 MiB/s';
-    statusText.innerText = 'Downloading fragments...';
+    statusText.innerText = 'Загрузка фрагментов...';
 }

@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Downloader Pro</title>
+    <title>Downloader Pro — Загрузчик Видео</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body {
@@ -19,7 +19,6 @@
         .progress-bar {
             transition: width 0.3s ease-out;
         }
-        /* Custom scrollbar */
         ::-webkit-scrollbar {
             width: 8px;
         }
@@ -37,7 +36,7 @@
 </head>
 <body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col overflow-hidden">
 
-    <!-- Title Bar -->
+    <!-- Заголовок окна -->
     <header class="drag-region bg-slate-800 h-10 flex items-center justify-between px-4 border-b border-slate-700">
         <div class="flex items-center space-x-2">
             <svg class="w-5 h-5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -55,11 +54,11 @@
         </div>
     </header>
 
-    <!-- Main Content -->
+    <!-- Основной контент -->
     <main class="flex-1 p-6 overflow-y-auto">
         <div class="max-w-3xl mx-auto space-y-6">
             
-            <!-- Tools Status Indicators -->
+            <!-- Статус инструментов -->
             <div class="flex space-x-4">
                 <div id="status-ffmpeg" class="bg-slate-800 px-3 py-1.5 rounded-full text-xs font-medium flex items-center space-x-2 border border-slate-700">
                     <span class="w-2 h-2 rounded-full bg-slate-500 indicator"></span>
@@ -75,19 +74,19 @@
                 </div>
             </div>
 
-            <!-- Input Card -->
+            <!-- Карточка ввода -->
             <div class="bg-slate-800 p-6 rounded-xl border border-slate-700 shadow-xl space-y-4">
                 <div>
-                    <label class="block text-sm font-medium text-slate-400 mb-2">Video URL</label>
+                    <label class="block text-sm font-medium text-slate-400 mb-2">Ссылка на видео / поток</label>
                     <input type="text" id="url-input" placeholder="https://www.youtube.com/watch?v=..." 
                         class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-3 text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all">
                 </div>
 
                 <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-sm font-medium text-slate-400 mb-2">Browser for Cookies</label>
+                        <label class="block text-sm font-medium text-slate-400 mb-2">Браузер для Cookies</label>
                         <select id="browser-select" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-3 text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all cursor-pointer">
-                            <option value="none">None</option>
+                            <option value="none">Не использовать</option>
                             <option value="chrome">Chrome</option>
                             <option value="firefox">Firefox</option>
                             <option value="edge">Edge</option>
@@ -102,36 +101,36 @@
                                 <div class="w-10 h-6 bg-slate-700 rounded-full peer peer-checked:bg-indigo-600 transition-colors"></div>
                                 <div class="absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition-transform peer-checked:translate-x-4"></div>
                             </div>
-                            <span class="text-sm font-medium text-slate-300 group-hover:text-white transition-colors">Turbo Mode (Aria2c)</span>
+                            <span class="text-sm font-medium text-slate-300 group-hover:text-white transition-colors">Турбо-режим (Aria2c)</span>
                         </label>
                     </div>
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-slate-400 mb-2">Save Folder</label>
+                    <label class="block text-sm font-medium text-slate-400 mb-2">Папка для сохранения</label>
                     <div class="flex space-x-2">
                         <div id="path-display" class="flex-1 bg-slate-900 border border-slate-700 rounded-lg px-4 py-3 text-slate-400 text-sm truncate">
-                            No folder selected...
+                            Папка не выбрна...
                         </div>
                         <button id="select-folder-btn" class="bg-slate-700 hover:bg-slate-600 text-white px-4 py-2 rounded-lg font-medium transition-colors">
-                            Browse
+                            Обзор
                         </button>
                     </div>
                 </div>
 
                 <button id="start-btn" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-4 rounded-xl shadow-lg shadow-indigo-500/20 transform active:scale-[0.98] transition-all">
-                    START DOWNLOAD
+                    НАЧАТЬ ЗАГРУЗКУ
                 </button>
             </div>
 
-            <!-- Progress Section (Hidden by default) -->
+            <!-- Прогресс (скрыт по умолчанию) -->
             <div id="progress-container" class="hidden bg-slate-800 p-6 rounded-xl border border-slate-700 shadow-xl space-y-4">
                 <div class="flex justify-between items-end">
                     <div>
                         <span class="text-2xl font-bold text-white" id="progress-percent">0%</span>
                     </div>
                     <div class="text-right">
-                        <div class="text-xs text-slate-400 uppercase font-bold tracking-widest">Speed</div>
+                        <div class="text-xs text-slate-400 uppercase font-bold tracking-widest">Скорость</div>
                         <div class="text-lg font-medium text-indigo-400" id="speed-display">0.00 MiB/s</div>
                     </div>
                 </div>
@@ -141,20 +140,20 @@
                 </div>
 
                 <div id="status-text" class="text-center text-sm text-slate-400 italic">
-                    Initializing download...
+                    Подготовка к загрузке...
                 </div>
             </div>
 
         </div>
     </main>
 
-    <!-- Toast Notification -->
+    <!-- Уведомления (Toasts) -->
     <div id="toast" class="fixed bottom-8 right-8 flex items-center p-4 mb-4 text-slate-100 bg-slate-800 rounded-lg shadow-2xl border border-slate-700 transform translate-y-24 transition-transform duration-300 z-50">
         <div class="inline-flex items-center justify-center flex-shrink-0 w-8 h-8 rounded-lg" id="toast-icon"></div>
         <div class="ml-3 text-sm font-medium" id="toast-message"></div>
     </div>
 
-    <!-- UI Logic -->
+    <!-- Логика UI -->
     <script src="renderer.js"></script>
 </body>
 </html>

@@ -2,11 +2,13 @@
 const minimizeBtn = document.getElementById('minimize-btn');
 const closeBtn = document.getElementById('close-btn');
 const urlInput = document.getElementById('url-input');
+const nameInput = document.getElementById('name-input'); // Новый элемент
 const browserSelect = document.getElementById('browser-select');
 const turboMode = document.getElementById('turbo-mode');
 const pathDisplay = document.getElementById('path-display');
 const selectFolderBtn = document.getElementById('select-folder-btn');
 const startBtn = document.getElementById('start-btn');
+const stopBtn = document.getElementById('stop-btn'); // Новый элемент
 
 const progressContainer = document.getElementById('progress-container');
 const progressBarFill = document.getElementById('progress-bar-fill');
@@ -95,6 +97,7 @@ selectFolderBtn.onclick = async () => {
 // --- Начало загрузки ---
 startBtn.onclick = () => {
     const url = urlInput.value.trim();
+    const customName = nameInput.value.trim();
     
     if (!url) {
         showToast('Введите корректную ссылку', 'error');
@@ -122,9 +125,27 @@ startBtn.onclick = () => {
         url,
         savePath: selectedPath,
         browser: browserSelect.value,
-        useAria: turboMode.checked
+        useAria: turboMode.checked,
+        customName: customName || null
     });
 };
+
+// --- Остановка загрузки ---
+stopBtn.onclick = () => {
+    window.api.cancelDownload();
+    resetUI();
+    showToast('Загрузка остановлена', 'info');
+};
+
+function resetUI() {
+    isDownloading = false;
+    startBtn.disabled = false;
+    startBtn.innerText = 'НАЧАТЬ ЗАГРУЗКУ';
+    startBtn.classList.replace('bg-slate-700', 'bg-indigo-600');
+    progressContainer.classList.add('hidden');
+    statusText.classList.remove('text-emerald-400', 'text-rose-400');
+    statusText.classList.add('text-slate-400');
+}
 
 // --- Обновления прогресса ---
 window.api.onProgress((data) => {
@@ -142,20 +163,17 @@ window.api.onFinished((data) => {
         statusText.classList.replace('text-slate-400', 'text-emerald-400');
         showToast('Успех: Видео загружено!', 'success');
     } else {
-        statusText.innerText = `Ошибка загрузки. Код: ${data.code}`;
+        statusText.innerText = `Ошибка загрузки или остановка. Код: ${data.code}`;
         statusText.classList.replace('text-slate-400', 'text-rose-400');
-        showToast('Загрузка прервана. Проверьте ссылку или настройки.', 'error');
+        // Не показываем ошибку если код 1 (часто при убийстве процесса)
+        if (data.code !== 1 && data.code !== null) {
+            showToast('Загрузка прервана.', 'error');
+        }
     }
 });
 
 window.api.onError((data) => {
-    isDownloading = false;
-    startBtn.disabled = false;
-    startBtn.innerText = 'НАЧАТЬ ЗАГРУЗКУ';
-    startBtn.classList.replace('bg-slate-700', 'bg-indigo-600');
-    
-    statusText.innerText = 'Произошла ошибка при загрузке.';
-    statusText.classList.replace('text-slate-400', 'text-rose-400');
+    resetUI();
     showToast(`Ошибка: ${data.message}`, 'error');
 });
 

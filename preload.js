@@ -13,6 +13,7 @@ contextBridge.exposeInMainWorld('api', {
 
   // Download control
   startDownload: (data) => ipcRenderer.send('start-download', data),
+  cancelDownload: () => ipcRenderer.send('cancel-download'),
 
   // Events from Main process
   onProgress: (callback) => ipcRenderer.on('download-progress', (event, data) => callback(data)),

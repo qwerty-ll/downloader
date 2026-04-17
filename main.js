@@ -96,10 +96,16 @@ ipcMain.handle('select-folder', async () => {
   return result.filePaths[0];
 });
 
+let currentDownloadProcess = null;
+
 // Download logic
-ipcMain.on('start-download', (event, { url, savePath, browser, useAria }) => {
+ipcMain.on('start-download', (event, { url, savePath, browser, useAria, customName }) => {
   const sender = event.sender;
   
+  // Use custom name or default to yt-dlp title template
+  const fileNameTemplate = customName ? `${customName}.%(ext)s` : '%(title)s.%(ext)s';
+  const outputPath = path.join(savePath, fileNameTemplate);
+
   const args = [
     url,
     '-f', 'bestvideo+bestaudio/best',
@@ -107,7 +113,7 @@ ipcMain.on('start-download', (event, { url, savePath, browser, useAria }) => {
     '--no-warnings',
     '--newline',
     '--user-agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
-    '-o', path.join(savePath, '%(title)s.%(ext)s')
+    '-o', outputPath
   ];
 
   if (browser && browser !== 'none') {
@@ -120,29 +126,27 @@ ipcMain.on('start-download', (event, { url, savePath, browser, useAria }) => {
     args.push('--compat-options', 'no-external-downloader-progress');
   }
 
-  const downloadProcess = spawn(getToolPath('yt-dlp'), args);
+  currentDownloadProcess = spawn(getToolPath('yt-dlp'), args);
 
   const rl = readline.createInterface({
-    input: downloadProcess.stdout,
+    input: currentDownloadProcess.stdout,
     terminal: false
   });
 
   rl.on('line', (line) => {
     if (sender.isDestroyed()) return;
 
-    // Enhanced Regex to catch standard yt-dlp and aria2c proxied output
     const progressMatch = line.match(/\[download\]\s+(\d+\.?\d*)%\s+of\s+.*?\s+at\s+(.*?)\s+ETA/);
     if (progressMatch) {
       const percentage = progressMatch[1];
       const speed = progressMatch[2];
       sender.send('download-progress', { percentage, speed });
     } else if (line.includes('[download]')) {
-       // Log other download info lines for debugging
        sender.send('download-log', line);
     }
   });
 
-  downloadProcess.stderr.on('data', (data) => {
+  currentDownloadProcess.stderr.on('data', (data) => {
     const message = data.toString();
     console.error(`stderr: ${message}`);
     if (!sender.isDestroyed()) {
@@ -150,15 +154,25 @@ ipcMain.on('start-download', (event, { url, savePath, browser, useAria }) => {
     }
   });
 
-  downloadProcess.on('close', (code) => {
+  currentDownloadProcess.on('close', (code) => {
+    currentDownloadProcess = null;
     if (!sender.isDestroyed()) {
       sender.send('download-finished', { code });
     }
   });
 
-  downloadProcess.on('error', (err) => {
+  currentDownloadProcess.on('error', (err) => {
+    currentDownloadProcess = null;
     if (!sender.isDestroyed()) {
       sender.send('download-error', { message: err.message });
     }
   });
+});
+
+// Cancel download
+ipcMain.on('cancel-download', () => {
+  if (currentDownloadProcess) {
+    currentDownloadProcess.kill('SIGTERM'); // Graceful kill
+    currentDownloadProcess = null;
+  }
 });

@@ -1,6 +1,6 @@
 #!/bin/bash
 cd "$(dirname "$0")"
-echo "🚀 Запуск настройки Downloader Pro для macOS..."
+echo "🚀 Запуск настройки Downloader для macOS..."
 
 if ! command -v node &> /dev/null
 then

@@ -8,7 +8,7 @@ const tools = [
   { name: 'aria2c', cmd: 'aria2c --version' }
 ];
 
-console.log('🔍 Checking environment for Downloader Pro...\n');
+console.log('🔍 Checking environment for Downloader...\n');
 
 let allFound = true;
 

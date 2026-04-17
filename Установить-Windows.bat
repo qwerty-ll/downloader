@@ -1,6 +1,6 @@
 @echo off
 chcp 65001 > nul
-echo 🚀 Запуск настройки Downloader Pro для Windows...
+echo 🚀 Запуск настройки Downloader для Windows...
 
 where node >nul 2>nul
 if %errorlevel% neq 0 (

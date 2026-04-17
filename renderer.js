@@ -159,6 +159,14 @@ window.api.onError((data) => {
     showToast(`Error: ${data.message}`, 'error');
 });
 
+window.api.onLog((message) => {
+    // Show detailed logs in status text for technical insight
+    if (message.length > 5) {
+        statusText.innerText = message.substring(0, 100) + (message.length > 100 ? '...' : '');
+    }
+    console.log('yt-dlp log:', message);
+});
+
 function updateProgress(data) {
     const { percentage, speed } = data;
     progressPercent.innerText = `${percentage}%`;

@@ -76,12 +76,15 @@ ipcMain.handle('select-folder', async () => {
 
 // Download logic
 ipcMain.on('start-download', (event, { url, savePath, browser, useAria }) => {
+  const sender = event.sender;
+  
   const args = [
     url,
     '-f', 'bestvideo+bestaudio/best',
     '--merge-output-format', 'mp4',
     '--no-warnings',
-    '--newline', // Important for parsing
+    '--newline',
+    '--user-agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
     '-o', path.join(savePath, '%(title)s.%(ext)s')
   ];
 
@@ -92,7 +95,6 @@ ipcMain.on('start-download', (event, { url, savePath, browser, useAria }) => {
   if (useAria) {
     args.push('--downloader', 'aria2c');
     args.push('--downloader-args', 'aria2c:-x 4 -s 4 -k 5M');
-    // Important: ensure progress is still outputted when using external downloader
     args.push('--compat-options', 'no-external-downloader-progress');
   }
 
@@ -104,25 +106,37 @@ ipcMain.on('start-download', (event, { url, savePath, browser, useAria }) => {
   });
 
   rl.on('line', (line) => {
-    // Regex to match [download] 10.0% of 100.00MiB at 1.50MiB/s ETA 01:00
+    if (sender.isDestroyed()) return;
+
+    // Enhanced Regex to catch standard yt-dlp and aria2c proxied output
     const progressMatch = line.match(/\[download\]\s+(\d+\.?\d*)%\s+of\s+.*?\s+at\s+(.*?)\s+ETA/);
     if (progressMatch) {
       const percentage = progressMatch[1];
       const speed = progressMatch[2];
-      mainWindow.webContents.send('download-progress', { percentage, speed });
+      sender.send('download-progress', { percentage, speed });
+    } else if (line.includes('[download]')) {
+       // Log other download info lines for debugging
+       sender.send('download-log', line);
     }
   });
 
   downloadProcess.stderr.on('data', (data) => {
-    console.error(`stderr: ${data}`);
-    // Optional: send warning to UI
+    const message = data.toString();
+    console.error(`stderr: ${message}`);
+    if (!sender.isDestroyed()) {
+      sender.send('download-log', message);
+    }
   });
 
   downloadProcess.on('close', (code) => {
-    mainWindow.webContents.send('download-finished', { code });
+    if (!sender.isDestroyed()) {
+      sender.send('download-finished', { code });
+    }
   });
 
   downloadProcess.on('error', (err) => {
-    mainWindow.webContents.send('download-error', { message: err.message });
+    if (!sender.isDestroyed()) {
+      sender.send('download-error', { message: err.message });
+    }
   });
 });

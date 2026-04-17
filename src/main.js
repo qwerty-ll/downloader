@@ -123,7 +123,7 @@ ipcMain.on('start-download', (event, { url, savePath, browser, useAria, customNa
   if (useAria) {
     args.push('--downloader', 'aria2c');
     args.push('--downloader-args', 'aria2c:-x 4 -s 4 -k 5M');
-    args.push('--compat-options', 'no-external-downloadergress');
+    args.push('--compat-options', 'no-external-downloader-progress');
   }
 
   currentDownloadProcess = spawn(getToolPath('yt-dlp'), args);

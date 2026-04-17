@@ -2,10 +2,10 @@
   "name": "downloader-pro",
   "version": "1.0.0",
   "description": "High-performance video downloader GUI for yt-dlp, ffmpeg, and aria2c",
-  "main": "main.js",
+  "main": "src/main.js",
   "scripts": {
     "start": "electron .",
-    "setup": "node scripts/check-tools.js",
+    "setup": "node src/scripts/check-tools.js",
     "pack": "electron-builder --dir",
     "dist": "electron-builder"
   },

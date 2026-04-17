@@ -52,7 +52,7 @@ ipcMain.on('window-close', () => {
 function getToolPath(toolName) {
     const isWin = process.platform === 'win32';
     const ext = isWin ? '.exe' : '';
-    const localPath = path.join(__dirname, 'bin', toolName + ext);
+    const localPath = path.join(__dirname, '..', 'bin', toolName + ext);
     
     if (fs.existsSync(localPath)) {
         return localPath;
@@ -66,7 +66,7 @@ ipcMain.handle('check-tools', async () => {
     return new Promise((resolve) => {
       const isWin = process.platform === 'win32';
       const ext = isWin ? '.exe' : '';
-      const localPath = path.join(__dirname, 'bin', cmd + ext);
+      const localPath = path.join(__dirname, '..', 'bin', cmd + ext);
 
       if (fs.existsSync(localPath)) {
           resolve(true);

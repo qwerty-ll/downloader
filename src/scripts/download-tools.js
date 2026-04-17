@@ -3,7 +3,7 @@ const path = require('path');
 const https = require('https');
 const { execSync } = require('child_process');
 
-const binDir = path.join(__dirname, '..', 'bin');
+const binDir = path.join(__dirname, '..', '..', 'bin');
 
 // Create bin directory if it doesn't exist
 if (!fs.existsSync(binDir)) {

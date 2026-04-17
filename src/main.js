@@ -127,7 +127,16 @@ ipcMain.on('start-download', (event, { url, savePath, browser, useAria, customNa
 
   // Add output and URL at the end
   args.push('-o', outputPath);
+  
+  // Explicitly set ffmpeg location if we have it locally
+  const ffmpegPath = getToolPath('ffmpeg');
+  if (ffmpegPath !== 'ffmpeg') {
+    args.push('--ffmpeg-location', ffmpegPath);
+  }
+
   args.push(url);
+
+  console.log('🚀 Running command:', getToolPath('yt-dlp'), args.join(' '));
 
   currentDownloadProcess = spawn(getToolPath('yt-dlp'), args);
 

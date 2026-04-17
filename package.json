@@ -1,0 +1,39 @@
+{
+  "name": "downloader-pro",
+  "version": "1.0.0",
+  "description": "High-performance video downloader GUI for yt-dlp, ffmpeg, and aria2c",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder"
+  },
+  "keywords": [
+    "downloader",
+    "yt-dlp",
+    "video",
+    "electron"
+  ],
+  "author": "Antigravity",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^28.0.0",
+    "electron-builder": "^24.9.1"
+  },
+  "build": {
+    "appId": "com.downloader.pro",
+    "productName": "Downloader Pro",
+    "directories": {
+      "output": "dist"
+    },
+    "win": {
+      "target": "portable"
+    },
+    "mac": {
+      "target": "dmg"
+    },
+    "linux": {
+      "target": "AppImage"
+    }
+  }
+}

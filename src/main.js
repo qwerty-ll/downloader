@@ -107,14 +107,12 @@ ipcMain.on('start-download', (event, { url, savePath, browser, useAria, customNa
   const outputPath = path.join(savePath, fileNameTemplate);
 
   const args = [
-    url,
     '-f', 'bestvideo+bestaudio/best',
     '--merge-output-format', 'mp4',
     '--no-warnings',
     '--newline',
-    '--user-agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
-    '--force-ipv4',
-    '-o', outputPath
+    '--no-check-certificates',
+    '--user-agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36'
   ];
 
   if (browser && browser !== 'none') {
@@ -126,6 +124,10 @@ ipcMain.on('start-download', (event, { url, savePath, browser, useAria, customNa
     args.push('--downloader-args', 'aria2c:-x 4 -s 4 -k 5M');
     args.push('--compat-options', 'no-external-downloader-progress');
   }
+
+  // Add output and URL at the end
+  args.push('-o', outputPath);
+  args.push(url);
 
   currentDownloadProcess = spawn(getToolPath('yt-dlp'), args);
 

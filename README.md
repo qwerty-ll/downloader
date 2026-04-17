@@ -12,6 +12,9 @@
 | :--- | :--- |
 | **🪟 Windows** | [**Скачать .exe (x64)**](https://github.com/qwerty-ll/downloader/releases/latest) |
 
+> [!NOTE]
+> Версия для **macOS** на данный момент доступна только для ручного запуска из исходного кода (инструкции ниже).
+
 ---
 
 ## ✨ Основные преимущества
@@ -29,6 +32,10 @@
 ### 🪟 Windows Пользователям
 1. Запустите [**Установить-Windows.bat**](file:///Users/smirnovmakar/AntigravityProjects/DownloadVideo/Установить-Windows.bat) (двойным кликом).
 2. После установки запускайте [**Запустить-Windows.bat**](file:///Users/smirnovmakar/AntigravityProjects/DownloadVideo/Запустить-Windows.bat).
+
+### 🍎 Mac Пользователям (Ручной запуск)
+1. Запустите [**Установить-Mac.command**](file:///Users/smirnovmakar/AntigravityProjects/DownloadVideo/Установить-Mac.command) (двойным кликом в Finder).
+2. После установки запускайте [**Запустить-Mac.command**](file:///Users/smirnovmakar/AntigravityProjects/DownloadVideo/Запустить-Mac.command).
 
 ---
 
